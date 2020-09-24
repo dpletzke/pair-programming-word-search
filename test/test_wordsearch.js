@@ -89,4 +89,20 @@ describe("#wordSearch()", function() {
     assert.isTrue(result);
   });
 
+  it("should return true if the word is present and backwards diagonally", function() {
+    const result = wordSearch([
+      ['D', 'W', 'C', 'F', 'Q', 'U', 'A', 'L'],
+      ['L', 'E', 'I', 'N', 'F', 'E', 'L', 'D'],
+      ['E', 'F', 'C', 'F', 'Q', 'U', 'A', 'L'],
+      ['F', 'M', 'J', 'T', 'E', 'V', 'R', 'G'],
+      ['N', 'H', 'K', 'S', 'Y', 'E', 'R', 'L'],
+      ['I', 'F', 'R', 'N', 'N', 'E', 'Y', 'B'],
+      ['E', 'B', 'T', 'W', 'A', 'P', 'A', 'I'],
+      ['F', 'D', 'C', 'A', 'K', 'R', 'A', 'S'],
+      ['E', 'Z', 'K', 'F', 'Q', 'U', 'F', 'L'],
+    ], 'FRANK')
+
+    assert.isTrue(result);
+  });
+
 });

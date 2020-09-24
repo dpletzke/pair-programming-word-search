@@ -24,37 +24,64 @@ const transpose = function (matrix) {
 
 
 
-const wordSearch = (letters, word) => {
-  if(!letters.length) {
-      return false;
-  }
-  /* frontwards */
-  const horizontalJoin = letters.map(ls => ls.join(''));
-  for (l of horizontalJoin) {
-      if (l.includes(word)) {
-          return true;
-      }
-  }
-  const verticalJoin = transpose(letters).map(ls => ls.join(''));
-  for (l of verticalJoin) {
-      if (l.includes(word)) {
-          return true;
-      }
-  }
-  /* backwards */
-  const flipWord = word.split('').reverse().join('');
-  for (l of verticalJoin) {
-      if (l.includes(flipWord)) {
-          return true;
-      }
-  }
-  for (l of horizontalJoin) {
-      if (l.includes(flipWord)) {
-          return true;
-      }
-  }
+const diagonalTranspose = (matrix) => {
+  /* Assume square matrix, creates empty array needed */
+  const diagonalMatrixRight = [...Array(matrix.length * 2 - 1)].map(() => []);
+  const diagonalMatrixLeft = [...Array(matrix.length * 2 - 1)].map(() => []);
 
-  return false;
-};
+    for(let i = 0; i < matrix.length; i++) {
+      for(let j = 0; j < matrix[i].length; j++) {
+        let differenceOfIndex = i - j;
+        let sumOfIndex = i + j;
+
+        const whichDiagIndexRight = matrix.length - 1 + differenceOfIndex;
+        const whichDiagIndexLeft = sumOfIndex;
+
+        diagonalMatrixRight[whichDiagIndexRight].push(matrix[i][j]);
+        diagonalMatrixLeft[whichDiagIndexLeft].push(matrix[i][j]);
+      }      
+  }
+  
+  return { left: diagonalMatrixLeft, right: diagonalMatrixRight };
+
+  /*  */
+  //diags right
+  // 0,2            //difference of index = -2    //0
+  // 0,1 1,2        //difference of index = -1    //1
+  // 0,0 1,1 2,2    //difference of index = 0     //2
+  // 1,0 2,1        //difference of index = 1     //3
+  // 2,0            //difference of index = 2     //4
+                          
+  //diags left        
+  //0,0             //sum of index = 0            //0 
+  //1,0 0,1         //sum of index = 1            //1
+  //2,0 1,1 0,2     //sum of index = 2            //2
+  //1,2 2,1         //sum of index = 3            //3
+  //2,2             //sum of index = 4            //4
+
+}
+
+
+
+const rowCheck = (matrix, word) => {
+  const wordReverse = word.split('').reverse().join('');
+  const checkRow = matrix.some(row => row.join('').includes(word));
+  const checkRowReverse = matrix.some(row => row.join('').includes(wordReverse));
+  return checkRow || checkRowReverse; 
+}
+
+const wordSearch = (matrix, word) => {
+  if(!matrix.length) {
+    return false;
+  }
+  const matrices = [
+    matrix,
+    transpose(matrix),
+    diagonalTranspose(matrix).left,
+    diagonalTranspose(matrix).right
+  ];
+  
+  return matrices.some(matrix => rowCheck(matrix, word));
+}
 
 module.exports = wordSearch
